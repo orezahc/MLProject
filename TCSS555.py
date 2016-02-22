@@ -18,11 +18,21 @@ df = pandas.read_csv('data/TCSS555/Train/Profile/Profile.csv')
 
 all_words = set()
 train = []
-for i in range(0, len(df)):
+test_size = 1000
+
+for i in range(0, len(df)-test_size):
 	f = codecs.open('data/TCSS555/Train/Text/'+df['userid'][i]+'.txt', encoding='latin-1')
 	text = f.readline().replace('\\','').lower()
 	text_token = nltk.word_tokenize(text)
 	all_words.update(set(word for word in text_token))
+	sys.stdout.write("%4d/%04d\r"%(i,len(df)))
+	sys.stdout.flush()
+
+
+for i in range(0, len(df)-test_size):
+	f = codecs.open('data/TCSS555/Train/Text/'+df['userid'][i]+'.txt', encoding='latin-1')
+	text = f.readline().replace('\\','').lower()
+	text_token = nltk.word_tokenize(text)
 	# in this moment the all_words doesn't contain all words in train data
 	# so text_feature doesn't contain all of data info.
 	text_feature = {word : (word in text_token) for word in all_words}
@@ -112,3 +122,38 @@ def load_allwords():
 # from nltk.corpus import treebank
 # t = treebank.parsed_sents('wsj_0001.mrg')[0]
 # t.draw()
+
+
+
+
+df = pandas.read_csv('data/TCSS555/Test/Profile/Profile.csv')
+
+
+# f = open('data/TCSS555/Train/Text/'+df['userid'][0]+'.txt', 'r')
+# text = f.readline()
+# tokens = nltk.word_tokenize(text[0].replace('\\',''))
+# tokens
+# tagged = nltk.pos_tag(tokens)
+# tagged
+# entities = nltk.chunk.ne_chunk(tagged)
+
+
+Test = []
+for i in range(0, len(df)):
+	all_words2 = set()
+	f = codecs.open('data/TCSS555/Test/Text/'+df['userid'][i]+'.txt', encoding='latin-1')
+	text = f.readline().replace('\\','').lower()
+	text_token = nltk.word_tokenize(text)
+	all_words2.update(set(word for word in text_token))
+	# in this moment the all_words doesn't contain all words in train data
+	# so text_feature doesn't contain all of data info.
+	text_feature = {word : (word in text_token) for word in all_words}
+	Test.append([text_feature, df['gender'][i]])
+	sys.stdout.write("%4d/%04d\r"%(i,len(df)))
+	sys.stdout.flush()
+sys.stdout.write("\n")
+
+match = 0
+for t in Test:
+	if t[1] == classifier.classify(t[0]):
+		match = match+1
