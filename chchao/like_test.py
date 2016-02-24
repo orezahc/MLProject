@@ -8,7 +8,7 @@ import pickle
 
 class like_test:
 	def __init__(self):
-		self.mean_value_table = pandas.read_csv('chchao/df_like_id_num_10up.csv')
+		self.mean_value_table = pandas.read_csv('~/MLProject/chchao/df_like_id_num_10up.csv')
 		return
 
 	def info(self):
@@ -42,6 +42,15 @@ class like_test:
 			agr += entry['m_agr'][0]
 			neu += entry['m_neu'][0]
 		output_dict = {}
+		if n_like_id == 0:
+			output_dict['age'] = 'xx-24'
+			output_dict['gender'] = 'female'
+			output_dict['ope'] = 2.5
+			output_dict['con'] = 2.5
+			output_dict['ext'] = 2.5
+			output_dict['agr'] = 2.5
+			output_dict['neu'] = 2.5
+			return output_dict
 		if age/n_like_id < 25:
 			output_dict['age'] = 'xx-24'
 		elif age/n_like_id < 35:
@@ -52,15 +61,17 @@ class like_test:
 			output_dict['age'] = '50-xx'
 
 		if gender/n_like_id >= 0.5:
-			return 1 #output_dict['gender'] = 'female'
+			output_dict['gender'] = 'female'
 		else: 
-			return 0 #output_dict['gender'] = 'male'
-		
-		# output_dict['ope'] = ope/n_like_id
-		# output_dict['con'] = con/n_like_id
-		# output_dict['ext'] = ext/n_like_id
-		# output_dict['agr'] = agr/n_like_id
-		# output_dict['neu'] = neu/n_like_id
+			output_dict['gender'] = 'male'
+
+		output_dict['ope'] = ope/float(n_like_id)
+		output_dict['con'] = con/float(n_like_id)
+		output_dict['ext'] = ext/float(n_like_id)
+		output_dict['agr'] = agr/float(n_like_id)
+		output_dict['neu'] = neu/float(n_like_id)
+
+		return output_dict
 		# return "<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 
 

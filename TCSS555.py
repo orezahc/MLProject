@@ -33,9 +33,12 @@ except:
 
 
 like_test = like_test()
-for i in range(0, 1)):
+len_profile = len(profile)
+for i in range(0, len_profile):
 	userid = profile['userid'][i]
-	ouput_dict = like_test.test(relation, userid)
-	f = open(output_dir+userid+'.xml', 'r')
+	output_dict = like_test.test(relation, userid)
+	f = open(output_dir+userid+'.xml', 'w')
 	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 )
+	sys.stdout.write("%d/%d\r"%(i,len_profile))
+	sys.stdout.flush()
