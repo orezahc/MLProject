@@ -5,6 +5,7 @@ import codecs
 import sys
 import pickle
 
+
 profile = pandas.read_csv('data/TCSS555/Train/Profile/Profile.csv')
 relation = pandas.read_csv('data/TCSS555/Train/Relation/Relation.csv')
 n_test = 1000
@@ -13,7 +14,7 @@ age_dict = {1 : '18-24', 2 : '25-34', 3 : '35-49', 4 : '50-xx'}
 
 # get one df contains like_id and count
 df_like_id_num = pandas.DataFrame({'count' : relation.groupby(['like_id']).size()}).reset_index()
-df_like_id_num_10up = df_like_id_num.query('count > 9').sort_values('count', ascending=True).reset_index()
+df_like_id_num_10up = df_like_id_num.query('count > 20').sort_values('count', ascending=True).reset_index()
 
 df_like_id_num_10up['m_g'] = pandas.Series(index = df_like_id_num_10up.index)
 df_like_id_num_10up['v_g'] = pandas.Series(index = df_like_id_num_10up.index)
@@ -55,5 +56,4 @@ for i in range(0, len(df_like_id_num_10up)):
 	sys.stdout.write("%4d/%04d\r"%(i,len(df_like_id_num_10up)))
 	sys.stdout.flush()
 
-cf = open('df_like_id_num_10up.pickle', 'wb')
-pickle.dump(df_like_id_num_10up, cf)
+df_like_id_num_10up.to_csv('df_like_id_num_10up.csv')
