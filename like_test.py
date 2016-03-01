@@ -9,8 +9,8 @@ from bisect import bisect_left
 
 class like_test:
 	def __init__(self):
-		profile = pandas.read_csv('data/TCSS555/Train/Profile/Profile.csv')
-		relation = pandas.read_csv('data/TCSS555/Train/Relation/Relation.csv')
+		profile = pandas.read_csv('/home/team14/MLProject/data/TCSS555/Train/Profile/Profile.csv')
+		relation = pandas.read_csv('/home/team14/MLProject/data/TCSS555/Train/Relation/Relation.csv')
 		df_like_id_num = pandas.DataFrame({'count' : relation.groupby(['like_id']).size()}).reset_index()
 		df_like_id_num_10up = df_like_id_num.query('count > 2').sort_values('count', ascending=True).reset_index()
 		self.mean_value_table = df_like_id_num_10up
@@ -51,6 +51,7 @@ class like_test:
 		# gender
 		n_like_id = 0
 		gender = 0
+	sys.stdout.flush()
 		age = 0
 		ope = 0
 		con = 0

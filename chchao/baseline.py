@@ -7,7 +7,7 @@ import pickle
 
 class baseline:
 	def __init__(self):
-		self.profile = pandas.read_csv('data/TCSS555/Train/Profile/Profile.csv')
+		profile = pandas.read_csv('/home/itadmin/MLProject/data/TCSS555/Train/Profile/Profile.csv')
 		mean = profile.mean()
 		self.output_dict = {}
 		if mean['age'] < 25:

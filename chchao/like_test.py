@@ -9,8 +9,8 @@ from bisect import bisect_left
 
 class like_test:
 	def __init__(self):
-		profile = pandas.read_csv('data/TCSS555/Train/Profile/Profile.csv')
-		relation = pandas.read_csv('data/TCSS555/Train/Relation/Relation.csv')
+		profile = pandas.read_csv('/home/itadmin/MLProject/data/TCSS555/Train/Profile/Profile.csv')
+		relation = pandas.read_csv('/home/itadmin/MLProject/data/TCSS555/Train/Relation/Relation.csv')
 		df_like_id_num = pandas.DataFrame({'count' : relation.groupby(['like_id']).size()}).reset_index()
 		df_like_id_num_10up = df_like_id_num.query('count > 2').sort_values('count', ascending=True).reset_index()
 		self.mean_value_table = df_like_id_num_10up
@@ -18,7 +18,8 @@ class like_test:
 		self.like_id_list = self.mean_value_table['like_id'].tolist()
 		self.like_id_list.sort()
 		self.like_id_list_len = len(self.like_id_list)
-		self.age_dict = {1 : '18-24', 2 : '25-34', 3 : '35-49', 4 : '50-xx'}
+		self.age_dict = {0 : 'xx-24', 1 : '25-34', 2 : '35-49', 3 : '50-xx'}
+		print(self.age_dict)
 		print("length like_id_list : %d"%(self.like_id_list_len))
 		print("min : %d max : %d"%(self.mean_value_table['count'][0],self.mean_value_table['count'][len(self.mean_value_table['count'])-1]))
 
@@ -43,6 +44,9 @@ class like_test:
 		age_group = [24, 34, 49]
 		pos = bisect_left(age_group, age, 0, len(age_group))
 		return pos
+
+	def lr_age_get_str(self, agegroup):
+		return self.age_dict[agegroup]
 
 	def test(self, relation, userid):
 		like_list = relation.query("userid == '%s'"%userid)['like_id'].tolist()
