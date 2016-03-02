@@ -39,21 +39,36 @@ like_test = like_test()
 cf = open('/home/itadmin/MLProject/classifier_like3up_nb_age.pickle', 'rb')
 age_predict = pickle.load(cf)
 
-
+cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
+g_predict = pickle.load(cf)
 
 len_profile = len(profile)
 
 
-
+cnt_non_like_id = 0
+cnt = 0
 for i in range(0, len_profile):
 	userid = profile['userid'][i]
-	age = age_predict.predict([like_test.lr_formating(relation, userid)])[0]
-	print(userid + " age : %d"%age)
+	like_ids = [like_test.lr_formating(relation, userid)]
+	cnt+=1
+	if 1 not in like_ids:
+		cnt_non_like_id+=1
+	age = age_predict.predict(like_ids)[0]
+	gender = g_predict.predict(like_ids)[0]	
+	
 	output_dict = baseline.predict()
-	print(output_dict)
+	output_dict['gender'] = like_test.lr_g_get_str(gender)
 	output_dict['age'] = like_test.lr_age_get_str(age)
+	print(userid)
+	print(output_dict)
+	print("gender " + str(g_predict.predict_proba(like_ids)))
+	print("age " +str(age_predict.predict_proba(like_ids)))
 	f = open(output_dir+userid+'.xml', 'w')
 	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 )
 	sys.stdout.write("%d/%d\r"%(i,len_profile))
 	sys.stdout.flush()
+import datetime
+timestr = datetime.datetime.now().strftime("%Y%m%d%H%M")
+logf = open('/home/itadmin/MLProject/log/'+timestr+'.log', 'wb')
+logf.write('total:%d non_like_id:%d'%(cnt,cnt_non_like_id))

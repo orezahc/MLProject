@@ -48,6 +48,12 @@ class like_test:
 	def lr_age_get_str(self, agegroup):
 		return self.age_dict[agegroup]
 
+	def lr_g_get_str(self, g):
+		if g == 1:
+			return 'female'
+		else:
+			return 'male'
+
 	def test(self, relation, userid):
 		like_list = relation.query("userid == '%s'"%userid)['like_id'].tolist()
 
