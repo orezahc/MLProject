@@ -60,15 +60,15 @@ def oxford_feature(oxford, userid):
 
 
 def oxford_gender_classfier():
-	pickle_path = os.getcwd()+'/clf_gender_knn_oxford.pickle'
+	pickle_path = '/home/itadmin/MLProject//clf_gender_knn_oxford.pickle'
 
 	try:
 		cf = open(pickle_path, 'rb')
 		knn = pickle.load(cf)
 		print(knn)
 	except:
-		p = pd.read_csv('data/TCSS555/Train/Profile/Profile.csv')
-		o = pd.read_csv('data/oxford.csv')
+		p = pd.read_csv('/home/itadmin/MLProject/data/TCSS555/Train/Profile/Profile.csv')
+		o = pd.read_csv('/home/itadmin/MLProject/data/oxford.csv')
 		features=[]
 		genders=[]
 		uid=''
@@ -84,7 +84,8 @@ def oxford_gender_classfier():
 			sys.stdout.write("preprocessing data : %4d/%04d\r"%(i,len(o)))
 			sys.stdout.flush()
 		sys.stdout.write("\n")
-
+		print(features)
+		print(genders)
 		knn = KNeighborsClassifier(n_neighbors=10)
 		score = cross_val_score(knn, features, genders, cv=10).mean()
 		print("kNN(neighbors=10) using oxford to predict gender:")

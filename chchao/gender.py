@@ -6,7 +6,7 @@ from oxford import oxford_feature, oxford_gender_classfier
 class gender:
 	def __init__(self):
 		self.clf_knn_gender_oxford = oxford_gender_classfier()
-		cf = open('clf_like_mnb_gender.pickle', 'rb')
+		cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
 		self.clf_mnb_gender_like = pickle.load(cf)
 
 		return

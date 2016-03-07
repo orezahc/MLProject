@@ -8,7 +8,7 @@ from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 from chchao.like_test import like_test
 from chchao.baseline import baseline
-
+from chchao.gender import gender
 if len(sys.argv) < 2:
 	print "Invalid arguments!"
 	exit()
@@ -32,6 +32,12 @@ except:
 	print("Error: reading relation.csv failed.")
 	exit()
 
+try:
+	oxford_csv = pandas.read_csv(input_dir+'oxford.csv')
+	print("reading oxford.csv successed.")
+except:
+	print("Warning: reading oxford.csv failed.")
+
 
 baseline = baseline()
 like_test = like_test()
@@ -39,8 +45,9 @@ like_test = like_test()
 cf = open('/home/itadmin/MLProject/clf_like_gnb_age.pickle', 'rb')
 age_predict = pickle.load(cf)
 
-cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
-g_predict = pickle.load(cf)
+# cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
+# g_predict = pickle.load(cf)
+g_predict = gender()
 
 len_profile = len(profile)
 
@@ -54,7 +61,7 @@ for i in range(0, len_profile):
 	if 1 not in like_ids:
 		cnt_non_like_id+=1
 	age = age_predict.predict(like_ids)[0]
-	gender = g_predict.predict(like_ids)[0]	
+	gender = g_predict.predict(like_ids, oxford_csv, userid)[0]	
 	
 	output_dict = baseline.predict()
 	output_dict['gender'] = like_test.lr_g_get_str(gender)
@@ -63,7 +70,7 @@ for i in range(0, len_profile):
 	print(output_dict)
 	print("gender " + str(g_predict.predict_proba(like_ids)))
 	print("age " +str(age_predict.predict_proba(like_ids)))
-	f = open(output_dir+userid+'.xml', 'w')
+	f = open(+userid+'.xml', 'w')
 	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 )
 	sys.stdout.write("%d/%d\r"%(i,len_profile))
@@ -72,7 +79,7 @@ import datetime
 timestr = datetime.datetime.now().strftime("%Y%m%d%H%M")
 try:
 	logf = open('/home/itadmin/MLProject/log/log', 'a')
-	logf.write(%s+': total:%d non_like_id:%d\n'%(cnt,cnt_non_like_id))
+	logf.write(timestr+': total:%d non_like_id:%d\n'%(cnt,cnt_non_like_id))
 except:
 	print("open log failed!")
 
