@@ -36,7 +36,7 @@ except:
 baseline = baseline()
 like_test = like_test()
 
-cf = open('/home/itadmin/MLProject/classifier_like3up_nb_age.pickle', 'rb')
+cf = open('/home/itadmin/MLProject/clf_like_gnb_age.pickle', 'rb')
 age_predict = pickle.load(cf)
 
 cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
@@ -70,5 +70,9 @@ for i in range(0, len_profile):
 	sys.stdout.flush()
 import datetime
 timestr = datetime.datetime.now().strftime("%Y%m%d%H%M")
-logf = open('/home/itadmin/MLProject/log/'+timestr+'.log', 'wb')
-logf.write('total:%d non_like_id:%d'%(cnt,cnt_non_like_id))
+try:
+	logf = open('/home/itadmin/MLProject/log/log', 'a')
+	logf.write(%s+': total:%d non_like_id:%d\n'%(cnt,cnt_non_like_id))
+except:
+	print("open log failed!")
+
