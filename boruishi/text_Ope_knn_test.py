@@ -50,17 +50,34 @@ class text_ope_knn_test:
         sims = self.index[ml_lsi]    
         sort_sims = sorted(enumerate(sims), key=lambda item: -item[1])
         ope_sum = 0
+	neu_sum = 0
+	ext_sum = 0
+	con_sum = 0
+	agr_sum = 0
         for i in range (0,20):
             row = sort_sims[i][0]
-            ope = self.df['ope'][row]
+            entry = self.df.iloc[row]
+            ope = entry['ope']
             ope_sum+=ope
+            neu = entry['neu']
+            neu_sum+=neu
+            con = entry['con']
+            con_sum+=con
+            ext = entry['ext']
+            ext_sum+=ext
+            agr = entry['agr']
+            agr_sum+=agr
         ope_sum = ope_sum/20
-        return ope_sum
+	neu_sum = neu_sum/20
+	con_sum = con_sum/20
+	ext_sum = ext_sum/20
+	agr_sum = agr_sum/20
+        return {'ope':ope_sum, 'neu':neu_sum, 'con':con_sum, 'ext':ext_sum, 'agr':agr_sum}
         
     def predict(self, txt): 
         texts = self.format(txt)
-        userope = self.test(texts)
-        return userope
+        result = self.test(texts)
+        return result
 
 
 

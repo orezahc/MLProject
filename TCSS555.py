@@ -9,6 +9,12 @@ from nltk.stem import WordNetLemmatizer
 from chchao.like_test import like_test
 from chchao.baseline import baseline
 from chchao.gender import gender
+from boruishi.text_Con_knn_test import text_con_knn_test
+from boruishi.text_Arg_knn_test import text_arg_knn_test
+from boruishi.text_Ope_knn_test import text_ope_knn_test
+from boruishi.text_Ext_knn_test import text_ext_knn_test
+from boruishi.text_Neu_knn_test import text_neu_knn_test
+
 if len(sys.argv) < 2:
 	print "Invalid arguments!"
 	exit()
@@ -52,6 +58,13 @@ g_predict = gender()
 len_profile = len(profile)
 
 
+
+try:
+	ope_p = text_ope_knn_test()
+except:
+	print('load personalities predictors failed!')
+
+
 cnt_non_like_id = 0
 cnt = 0
 for i in range(0, len_profile):
@@ -64,8 +77,14 @@ for i in range(0, len_profile):
 	gender = g_predict.predict(like_ids, oxford_csv, userid)[0]	
 #	print(userid)
 #	print("gender "+str(gender))
-	
+	text = codecs.open(input_dir+'text/'+userid+'.txt', encoding='latin-1').readline()
 	output_dict = baseline.predict()
+	pern = ope_p.predict(text)
+	output_dict['ext'] = pern['ext']	
+	output_dict['arg'] = pern['agr']
+	output_dict['ope'] = pern['ope']
+	output_dict['con'] = pern['con']
+	output_dict['neu'] = pern['neu']
 	output_dict['gender'] = like_test.lr_g_get_str(gender)
 	output_dict['age'] = like_test.lr_age_get_str(age)
 #	print("gender " + str(g_predict.predict_proba(like_ids)))
