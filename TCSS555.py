@@ -62,19 +62,20 @@ for i in range(0, len_profile):
 		cnt_non_like_id+=1
 	age = age_predict.predict(like_ids)[0]
 	gender = g_predict.predict(like_ids, oxford_csv, userid)[0]	
+#	print(userid)
+#	print("gender "+str(gender))
 	
 	output_dict = baseline.predict()
 	output_dict['gender'] = like_test.lr_g_get_str(gender)
 	output_dict['age'] = like_test.lr_age_get_str(age)
-	print(userid)
-	print(output_dict)
-	print("gender " + str(g_predict.predict_proba(like_ids)))
-	print("age " +str(age_predict.predict_proba(like_ids)))
-	f = open(+userid+'.xml', 'w')
+#	print("gender " + str(g_predict.predict_proba(like_ids)))
+#	print("age " +str(age_predict.predict_proba(like_ids)))
+	f = open(output_dir+userid+'.xml', 'w')
 	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 )
 	sys.stdout.write("%d/%d\r"%(i,len_profile))
 	sys.stdout.flush()
+sys.stdout.write("\n")
 import datetime
 timestr = datetime.datetime.now().strftime("%Y%m%d%H%M")
 try:

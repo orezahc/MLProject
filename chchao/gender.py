@@ -16,5 +16,5 @@ class gender:
 		if isContainFace:
 			gender = self.clf_knn_gender_oxford.predict([feature])
 		else:
-			gender = self.clf_mnb_gender_like.predict([likes_feature])
+			gender = self.clf_mnb_gender_like.predict(likes_feature)
 		return gender
