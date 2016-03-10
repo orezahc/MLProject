@@ -11,7 +11,6 @@ from gensim import corpora, models, similarities
 from os import listdir
 from os.path import isfile, join
 import math
-import pickle
 
 
 class text_ope_knn_test:

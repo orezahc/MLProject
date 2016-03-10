@@ -9,11 +9,7 @@ from nltk.stem import WordNetLemmatizer
 from chchao.like_test import like_test
 from chchao.baseline import baseline
 from chchao.gender import gender
-from boruishi.text_Con_knn_test import text_con_knn_test
-from boruishi.text_Arg_knn_test import text_arg_knn_test
 from boruishi.text_Ope_knn_test import text_ope_knn_test
-from boruishi.text_Ext_knn_test import text_ext_knn_test
-from boruishi.text_Neu_knn_test import text_neu_knn_test
 
 if len(sys.argv) < 2:
 	print "Invalid arguments!"
@@ -48,7 +44,7 @@ except:
 baseline = baseline()
 like_test = like_test()
 
-cf = open('/home/itadmin/MLProject/clf_like_gnb_age.pickle', 'rb')
+cf = open('/home/itadmin/MLProject/clf_gender_SGDC_text_like.pickle', 'rb')
 age_predict = pickle.load(cf)
 
 # cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
@@ -73,11 +69,14 @@ for i in range(0, len_profile):
 	cnt+=1
 	if 1 not in like_ids:
 		cnt_non_like_id+=1
-	age = age_predict.predict(like_ids)[0]
-	gender = g_predict.predict(like_ids, oxford_csv, userid)[0]	
+
+        text = codecs.open(input_dir+'text/'+userid+'.txt', encoding='latin-1').readline()
+        like_text = str(relation.query("userid == '%s'"%userid)['like_id'].tolist())[1:-1]+text
+	print(like_text)
+	age = age_predict.predict([like_text])[0]
+	gender = g_predict.predict([like_text], like_ids, oxford_csv, userid)[0]
 #	print(userid)
 #	print("gender "+str(gender))
-	text = codecs.open(input_dir+'text/'+userid+'.txt', encoding='latin-1').readline()
 	output_dict = baseline.predict()
 	pern = ope_p.predict(text)
 	output_dict['ext'] = pern['ext']	
