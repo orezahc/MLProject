@@ -44,7 +44,7 @@ except:
 baseline = baseline()
 like_test = like_test()
 
-cf = open('/home/itadmin/MLProject/clf_gender_SGDC_text_like.pickle', 'rb')
+cf = open('/home/itadmin/MLProject/clf_age_SGDC_liketext.pickle', 'rb')
 age_predict = pickle.load(cf)
 
 # cf = open('/home/itadmin/MLProject/clf_like_mnb_gender.pickle', 'rb')
@@ -71,7 +71,7 @@ for i in range(0, len_profile):
 		cnt_non_like_id+=1
 
         text = codecs.open(input_dir+'text/'+userid+'.txt', encoding='latin-1').readline()
-        like_text = str(relation.query("userid == '%s'"%userid)['like_id'].tolist())[1:-1]+text
+        like_text = text+' '+str(relation.query("userid == '%s'"%userid)['like_id'].tolist())[1:-1]
 	print(like_text)
 	age = age_predict.predict([like_text])[0]
 	gender = g_predict.predict([like_text], like_ids, oxford_csv, userid)[0]
