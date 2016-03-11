@@ -10,6 +10,7 @@ from chchao.like_test import like_test
 from chchao.baseline import baseline
 from chchao.gender import gender
 from boruishi.text_Ope_knn_test import text_ope_knn_test
+from boruishi.liwc_lreg import *
 
 if len(sys.argv) < 2:
 	print "Invalid arguments!"
@@ -61,6 +62,8 @@ except:
 	print('load personalities predictors failed!')
 
 
+regr_ope, regr_ext, regr_con, regr_agr, regr_neu = train()
+
 cnt_non_like_id = 0
 cnt = 0
 for i in range(0, len_profile):
@@ -72,24 +75,25 @@ for i in range(0, len_profile):
 
         text = codecs.open(input_dir+'text/'+userid+'.txt', encoding='latin-1').readline()
         like_text = text+' '+str(relation.query("userid == '%s'"%userid)['like_id'].tolist())[1:-1]
-	print(like_text)
 	age = age_predict.predict([like_text])[0]
 	gender = g_predict.predict([like_text], like_ids, oxford_csv, userid)[0]
 #	print(userid)
 #	print("gender "+str(gender))
 	output_dict = baseline.predict()
-	pern = ope_p.predict(text)
-	output_dict['ext'] = pern['ext']	
-	output_dict['arg'] = pern['agr']
-	output_dict['ope'] = pern['ope']
-	output_dict['con'] = pern['con']
-	output_dict['neu'] = pern['neu']
+
+	
+	pern = classify(regr_ope, regr_ext, regr_con, regr_agr, regr_neu, input_dir, userid)
+	output_dict['ext'] = pern[1]	
+	output_dict['arg'] = pern[3]
+	output_dict['ope'] = pern[0]
+	output_dict['con'] = pern[2]
+	output_dict['neu'] = pern[4]
 	output_dict['gender'] = like_test.lr_g_get_str(gender)
 	output_dict['age'] = like_test.lr_age_get_str(age)
 #	print("gender " + str(g_predict.predict_proba(like_ids)))
 #	print("age " +str(age_predict.predict_proba(like_ids)))
 	f = open(output_dir+userid+'.xml', 'w')
-	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%d\"\nneurotic=\"%d\"\nagreeable=\"%d\"\nconscientious=\"%d\"\nopen=\"%d\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
+	f.write("<user\nId=\"%s\"\nage_group=\"%s\"\ngender=\"%s\"\nextrovert=\"%f\"\nneurotic=\"%f\"\nagreeable=\"%f\"\nconscientious=\"%f\"\nopen=\"%f\"\n/>"%(userid, output_dict['age'], output_dict['gender'], output_dict['ext'], output_dict['neu'], output_dict['agr'], output_dict['con'], output_dict['ope'])
 )
 	sys.stdout.write("%d/%d\r"%(i,len_profile))
 	sys.stdout.flush()
